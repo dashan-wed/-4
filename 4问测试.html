@@ -3,64 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>纯前端自动判卷系统</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f9f9f9;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-        h1 {
-            text-align: center;
-        }
-        .upload-section {
-            margin-bottom: 20px;
-        }
-        .upload-section input {
-            display: block;
-            margin-top: 10px;
-        }
-        button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .result {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-        }
-    </style>
+    <!-- Base URL 配置，用于解决 GitHub Pages 路径问题 -->
+    <base href="/repository-name/"> <!-- 将 repository-name 替换为你的仓库名称 -->
+    <title>自动判卷系统</title>
+    <!-- 引用样式表 -->
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>纯前端自动判卷系统</h1>
+    <header>
+        <h1>自动判卷系统</h1>
+    </header>
 
-        <!-- 标准答案 -->
+    <main>
         <div class="upload-section">
             <label for="answerInput">输入标准答案（格式：1:A,2:B,...）</label>
             <textarea id="answerInput" placeholder="例如：1:A,2:B,3:C" rows="5"></textarea>
         </div>
 
-        <!-- 学生答案上传 -->
         <div class="upload-section">
             <label for="studentFile">上传学生答案文件（格式：1:A,2:B,...）</label>
             <input type="file" id="studentFile" accept=".txt">
@@ -68,76 +27,13 @@
 
         <button onclick="evaluate()">判分</button>
         <div id="result" class="result"></div>
-    </div>
+    </main>
 
-    <script>
-        function evaluate() {
-            const answerInput = document.getElementById("answerInput").value.trim();
-            const studentFile = document.getElementById("studentFile").files[0];
-            const resultDiv = document.getElementById("result");
+    <footer>
+        <p>&copy; 2024 自动判卷系统</p>
+    </footer>
 
-            if (!answerInput) {
-                resultDiv.innerHTML = "请先输入标准答案！";
-                return;
-            }
-
-            if (!studentFile) {
-                resultDiv.innerHTML = "请先上传学生答案文件！";
-                return;
-            }
-
-            // 解析标准答案
-            const correctAnswers = parseAnswers(answerInput);
-            if (!correctAnswers) {
-                resultDiv.innerHTML = "标准答案格式错误！请检查格式（如：1:A,2:B,...）。";
-                return;
-            }
-
-            // 读取学生答案文件
-            const reader = new FileReader();
-            reader.onload = function () {
-                const studentAnswersText = reader.result.trim();
-                const studentAnswers = parseAnswers(studentAnswersText);
-
-                if (!studentAnswers) {
-                    resultDiv.innerHTML = "学生答案格式错误！请检查文件内容（如：1:A,2:B,...）。";
-                    return;
-                }
-
-                // 判分
-                let score = 0;
-                let totalQuestions = Object.keys(correctAnswers).length;
-
-                for (let question in correctAnswers) {
-                    if (studentAnswers[question] === correctAnswers[question]) {
-                        score++;
-                    }
-                }
-
-                // 显示结果
-                resultDiv.innerHTML = `判分完成！学生答对了 ${score} / ${totalQuestions} 道题。`;
-            };
-
-            reader.onerror = function () {
-                resultDiv.innerHTML = "读取学生答案文件失败！";
-            };
-
-            reader.readAsText(studentFile);
-        }
-
-        // 解析答案字符串
-        function parseAnswers(text) {
-            const answers = {};
-            const pairs = text.split(',');
-            for (let pair of pairs) {
-                const [question, answer] = pair.split(':').map(item => item.trim());
-                if (!question || !answer || !/^[A-D]$/i.test(answer)) {
-                    return null; // 格式错误
-                }
-                answers[question] = answer.toUpperCase();
-            }
-            return answers;
-        }
-    </script>
+    <!-- 引用 JavaScript 文件 -->
+    <script src="./script.js"></script>
 </body>
 </html>
